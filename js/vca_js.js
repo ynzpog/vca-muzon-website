@@ -324,11 +324,51 @@ if (verseText && verseRef) {
 }
 
 
-/* INDEX LANDING BACKGROUND */
+/* ================================
+   HOMEPAGE HERO
+================================ */
 
-const landingHero = document.querySelector(".landing-hero, .landing-style-hero");
-const heroVideos = document.querySelectorAll(".hero-video");
-const heroScrollIndicator = document.querySelector(".hero-scroll-indicator");
+const landingHero = document.querySelector(
+  ".landing-hero, .landing-style-hero"
+);
+
+const heroVideos = Array.from(
+  document.querySelectorAll(".hero-video")
+);
+
+const heroScrollIndicator = document.querySelector(
+  ".hero-scroll-indicator"
+);
+
+/*
+  Display duration for each video, in milliseconds.
+
+  Video 1 = 3 seconds
+  Video 2 = 3 seconds
+  Video 3 = 3 seconds
+  Video 4 = 3 seconds
+*/
+const HERO_VIDEO_DURATIONS = [
+  3000,
+  3000,
+  3000,
+  3000
+];
+
+const prefersReducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+);
+
+let heroVideoIndex = 0;
+let heroVideoTimer = null;
+let isHeroVisible = true;
+let isHeroSequenceRunning = false;
+let autoplayFailed = false;
+
+
+/* ================================
+   HERO SCROLL INDICATOR
+================================ */
 
 if (heroScrollIndicator) {
   let isHeroScrollIndicatorHidden;
@@ -338,27 +378,80 @@ if (heroScrollIndicator) {
 
     if (shouldHide === isHeroScrollIndicatorHidden) return;
 
-    heroScrollIndicator.classList.toggle("is-hidden", shouldHide);
+    heroScrollIndicator.classList.toggle(
+      "is-hidden",
+      shouldHide
+    );
+
     isHeroScrollIndicatorHidden = shouldHide;
   }
 
   updateHeroScrollIndicator();
-  window.addEventListener("scroll", updateHeroScrollIndicator, { passive: true });
+
+  window.addEventListener(
+    "scroll",
+    updateHeroScrollIndicator,
+    { passive: true }
+  );
 }
 
-let heroVideoIndex = 0;
-let heroIdleTimer;
-let heroVideoTimer;
+
+/* ================================
+   HERO VIDEO HELPERS
+================================ */
+
+function getHeroVideoDuration(index) {
+  const video = heroVideos[index];
+
+  if (!video) {
+    return 3000;
+  }
+
+  /*
+    Optional HTML override:
+
+    <video
+      class="hero-video"
+      data-clip-duration="8000"
+    >
+  */
+  const customDuration = Number(
+    video.dataset.clipDuration
+  );
+
+  if (
+    Number.isFinite(customDuration) &&
+    customDuration > 0
+  ) {
+    return customDuration;
+  }
+
+  return HERO_VIDEO_DURATIONS[index] || 3000;
+}
+
+
+function clearHeroVideoTimer() {
+  if (heroVideoTimer !== null) {
+    clearTimeout(heroVideoTimer);
+    heroVideoTimer = null;
+  }
+}
+
+
+function pauseHeroVideos() {
+  heroVideos.forEach((video) => {
+    if (video.tagName === "VIDEO") {
+      video.pause();
+    }
+  });
+}
+
 
 function showChurchImage() {
   if (!landingHero) return;
 
   landingHero.classList.remove("show-video");
 
-  clearInterval(heroVideoTimer);
-}
-
-function showHeroVideo(index) {
   heroVideos.forEach((video) => {
     video.classList.remove("active-video");
 
@@ -366,61 +459,254 @@ function showHeroVideo(index) {
       video.pause();
     }
   });
+}
 
+
+/* ================================
+   HERO VIDEO SEQUENCE
+================================ */
+
+async function showHeroVideo(index, restartVideo = true) {
   const currentVideo = heroVideos[index];
-  currentVideo.classList.add("active-video");
 
-  if (currentVideo.tagName === "VIDEO") {
-    currentVideo.muted = true;
-    currentVideo.playsInline = true;
-    currentVideo.currentTime = 0;
-    currentVideo.play().catch(() => {});
+  if (!landingHero || !currentVideo) {
+    return false;
+  }
+
+  heroVideos.forEach((video, videoIndex) => {
+    const isCurrentVideo = videoIndex === index;
+
+    video.classList.toggle(
+      "active-video",
+      isCurrentVideo
+    );
+
+    if (
+      video.tagName === "VIDEO" &&
+      !isCurrentVideo
+    ) {
+      video.pause();
+    }
+  });
+
+  if (currentVideo.tagName !== "VIDEO") {
+    landingHero.classList.add("show-video");
+    return true;
+  }
+
+  currentVideo.muted = true;
+  currentVideo.defaultMuted = true;
+  currentVideo.playsInline = true;
+  currentVideo.loop = true;
+
+  if (restartVideo) {
+    try {
+      currentVideo.currentTime = 0;
+    } catch (error) {
+      // Some browsers may block currentTime changes
+      // until the video metadata has loaded.
+    }
+  }
+
+  try {
+    await currentVideo.play();
+
+    autoplayFailed = false;
+    landingHero.classList.add("show-video");
+
+    return true;
+  } catch (error) {
+    autoplayFailed = true;
+    showChurchImage();
+
+    return false;
   }
 }
 
-function startHeroVideos() {
-  if (!landingHero || heroVideos.length === 0) return;
 
-  landingHero.classList.add("show-video");
+function scheduleNextHeroVideo() {
+  clearHeroVideoTimer();
 
-  heroVideoIndex = 0;
-  showHeroVideo(heroVideoIndex);
+  if (
+    !isHeroSequenceRunning ||
+    !isHeroVisible ||
+    document.hidden ||
+    prefersReducedMotion.matches ||
+    autoplayFailed
+  ) {
+    return;
+  }
 
-  clearInterval(heroVideoTimer);
+  const currentDuration =
+    getHeroVideoDuration(heroVideoIndex);
 
-  heroVideoTimer = setInterval(() => {
-    heroVideoIndex++;
+  heroVideoTimer = setTimeout(async () => {
+    heroVideoIndex =
+      (heroVideoIndex + 1) % heroVideos.length;
 
-    if (heroVideoIndex >= heroVideos.length) {
-      heroVideoIndex = 0;
+    const videoStarted = await showHeroVideo(
+      heroVideoIndex,
+      true
+    );
+
+    if (videoStarted) {
+      scheduleNextHeroVideo();
     }
-
-    showHeroVideo(heroVideoIndex);
-  }, 4000);
+  }, currentDuration);
 }
 
-function resetHeroIdleTimer() {
-  if (!landingHero || heroVideos.length === 0) return;
 
-  clearTimeout(heroIdleTimer);
+async function startHeroVideos({
+  restartCurrentVideo = false
+} = {}) {
+  if (
+    !landingHero ||
+    heroVideos.length === 0 ||
+    prefersReducedMotion.matches ||
+    document.hidden ||
+    !isHeroVisible
+  ) {
+    return;
+  }
 
-  showChurchImage();
+  isHeroSequenceRunning = true;
+  autoplayFailed = false;
 
-  heroIdleTimer = setTimeout(() => {
-    startHeroVideos();
-  }, 5000);
+  const videoStarted = await showHeroVideo(
+    heroVideoIndex,
+    restartCurrentVideo
+  );
+
+  if (videoStarted) {
+    scheduleNextHeroVideo();
+  }
 }
+
+
+function pauseHeroVideoSequence() {
+  isHeroSequenceRunning = false;
+
+  clearHeroVideoTimer();
+  pauseHeroVideos();
+}
+
+
+function resumeHeroVideoSequence() {
+  if (
+    !landingHero ||
+    heroVideos.length === 0 ||
+    prefersReducedMotion.matches ||
+    document.hidden ||
+    !isHeroVisible
+  ) {
+    return;
+  }
+
+  startHeroVideos({
+    restartCurrentVideo: false
+  });
+}
+
+
+/* ================================
+   VIEWPORT VISIBILITY
+================================ */
+
+if (
+  landingHero &&
+  heroVideos.length > 0 &&
+  "IntersectionObserver" in window
+) {
+  const heroObserver = new IntersectionObserver(
+    (entries) => {
+      const heroEntry = entries[0];
+
+      isHeroVisible = heroEntry.isIntersecting;
+
+      if (isHeroVisible) {
+        resumeHeroVideoSequence();
+      } else {
+        pauseHeroVideoSequence();
+      }
+    },
+    {
+      threshold: 0
+    }
+  );
+
+  heroObserver.observe(landingHero);
+}
+
+
+/* ================================
+   BROWSER TAB VISIBILITY
+================================ */
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+    if (document.hidden) {
+      pauseHeroVideoSequence();
+    } else {
+      resumeHeroVideoSequence();
+    }
+  }
+);
+
+
+/* ================================
+   REDUCED MOTION
+================================ */
+
+function handleReducedMotionChange(event) {
+  if (event.matches) {
+    pauseHeroVideoSequence();
+    showChurchImage();
+  } else {
+    autoplayFailed = false;
+
+    startHeroVideos({
+      restartCurrentVideo: true
+    });
+  }
+}
+
+if (
+  typeof prefersReducedMotion.addEventListener ===
+  "function"
+) {
+  prefersReducedMotion.addEventListener(
+    "change",
+    handleReducedMotionChange
+  );
+} else {
+  prefersReducedMotion.addListener(
+    handleReducedMotionChange
+  );
+}
+
+
+/* ================================
+   INITIALIZE HERO
+================================ */
 
 if (landingHero && heroVideos.length > 0) {
+  heroVideos.forEach((video) => {
+    if (video.tagName === "VIDEO") {
+      video.muted = true;
+      video.defaultMuted = true;
+      video.playsInline = true;
+      video.loop = true;
+    }
+  });
+
   showChurchImage();
 
-  heroIdleTimer = setTimeout(() => {
-    startHeroVideos();
-  }, 1000);
-
-  landingHero.addEventListener("mousemove", resetHeroIdleTimer);
-  landingHero.addEventListener("touchstart", resetHeroIdleTimer);
-  landingHero.addEventListener("keydown", resetHeroIdleTimer);
+  if (!prefersReducedMotion.matches) {
+    startHeroVideos({
+      restartCurrentVideo: true
+    });
+  }
 }
 
 /* FIX WHITE SCREEN WHEN USING BACK BUTTON */
