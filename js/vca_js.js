@@ -308,7 +308,15 @@ const verseRef = document.getElementById("dailyVerseRef");
 
 if (verseText && verseRef) {
   const today = new Date();
-  const dayNumber = Math.floor(today.getTime() / (1000 * 60 * 60 * 24));
+  const millisecondsPerDay = 1000 * 60 * 60 * 24;
+
+  // Use the local calendar date to advance exactly once per day. Converting
+  // its date parts to UTC avoids skipped or repeated indexes caused by time
+  // zones and daylight-saving changes.
+  const dayNumber = Math.floor(
+    Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) /
+      millisecondsPerDay
+  );
   const verseIndex = dayNumber % dailyVerses.length;
 
   verseText.textContent = `"${dailyVerses[verseIndex].text}"`;

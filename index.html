@@ -64,11 +64,19 @@
 
             <div class="hero-video-container">
                 <video class="hero-video" autoplay muted loop playsinline>
-                    <source src="assets/index/vca_index_hero.mp4" type="video/mp4">
+                    <source src="assets/index/vca_index_hero_2.mp4" type="video/mp4">
                 </video>
 
                 <video class="hero-video" autoplay muted loop playsinline>
-                    <source src="assets/index/vca_index_hero_2.mp4" type="video/mp4">
+                    <source src="assets/index/guitar.mp4" type="video/mp4">
+                </video>
+
+                <video class="hero-video" autoplay muted loop playsinline>
+                    <source src="assets/index/drums.mp4" type="video/mp4">
+                </video>
+
+                <video class="hero-video" autoplay muted loop playsinline>
+                    <source src="assets/index/keyboard.mp4" type="video/mp4">
                 </video>
             </div>
 
@@ -129,23 +137,6 @@
                     &#10094;
                 </button>
                 <!-- SLIDE 1 -->
-                <div class="announcement-slide active">
-                    <img
-                        src="assets/home/carousel/welcome-image.webp"
-                        alt="Announcement Image"
-                        class="announcement-image"
-                        width="1200"
-                        height="675"
-                    >
-                    <div class="announcement-content">
-                        <h3>Welcome to VCA Muzon</h3>
-                        <p>
-                                
-                        </p>
-                    </div>
-                </div>
-
-                <!-- SLIDE 2 -->
 
                 <div class="announcement-slide">
                     <img
@@ -170,7 +161,7 @@
                     </div>
                 </div>
 
-                <!-- SLIDE 3 -->
+                <!-- SLIDE 2 -->
 
                 <div class="announcement-slide">
                     <img
@@ -192,7 +183,7 @@
                     </div>
                 </div>
 
-                <!-- SLIDE 4 -->
+                <!-- SLIDE 3 -->
 
                 <div class="announcement-slide">
                     <img
@@ -211,7 +202,7 @@
                     </div>
                 </div>
 
-                <!-- SLIDE 5 -->
+                <!-- SLIDE 4 -->
 
                 <div class="announcement-slide">
                     <img
@@ -232,7 +223,7 @@
                     </div>
                 </div>
 
-                <!-- SLIDE 6 -->
+                <!-- SLIDE 5 -->
 
                 <div class="announcement-slide">
                     <img
@@ -274,34 +265,71 @@
 
         </section>
 
-        <!--ABOUT-->
-        <section class="about-preview animate-up animate-delay-3">
-            <div class="about-text">
-                <p class="section-label">About VCA Muzon</p>
-                <h2>A FAMILY, <br>A MISSION,<br>A PURPOSE.</h2>
+        <!-- WELCOME -->
+        
+        <section class="pastor-welcome" id="pastor-welcome">
+            <div class="pastor-video-card">
+                <div class="pastor-video-wrapper">
+                    <button 
+                        class="pastor-video-poster" 
+                        type="button"
+                        aria-label="Play welcome video from Pastor Boaz">
+                        <img src="assets/about/welcome_img.webp" alt="Welcoming visitors to VCA Muzon">
+                        <span class="pastor-play-button">▶</span>
+                    </button>
 
-                <p>
-                    Victory Churches of Asia exists for the glory of God and the expansion of His Kingdom through reaching, teaching, and mobilizing people to
-                    become like Christ.
-                </p>
+                    <div class="pastor-youtube-video" hidden>
+                        <iframe
+                            src=""
+                            title="Welcome from Pastor Boaz"
+                            data-video-src="https://www.youtube.com/embed/SCdKZxlJE2Y?si=WOvwgNJ7AaRdsPDX"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
 
-                <p>
-                    At Victory Churches of Asia - Muzon, we are a community
-                    of believers committed to loving God, growing in His Word,
-                    and reaching others with the Gospel. Whether you are
-                    exploring faith for the first time or looking for a church
-                    family, you are welcome here.
-                </p>
+                <div class="pastor-video-content">
+                    
+                    <h3>Welcome to our Church!</h3>
+                    <p>
+                        No matter where you are in your journey, you are always welcome here. 
+                        We are a community growing together in faith, worshiping Jesus, serving others, and experiencing God’s love.
+                    </p>
 
-                <p class="script-text">You belong here.</p>
-
-                <a href="about.html" class="primary-btn small-btn">Learn More <span>→</span></a>                
-            </div>
-
-            <div class="about-image">
-                <img src="assets/home/home_image_01.webp" alt="VCA Muzon Service" loading="lazy">
+                    <div class="pastor-video-actions">
+                        <a href="contact.html#plan-your-visit" class="btn btn-primary">Plan Your Visit</a>
+                        
+                    </div>
+                </div>
             </div>
         </section>
+
+        <section class="about-welcome animate-up animate-delay-1">
+            <div class="about-welcome-image">
+                <img src="assets/about/vca-about-image.webp" alt="VCA church">
+            </div>
+
+            <div class="about-welcome-text">
+                
+                <h2>A place to belong,<br>a family to grow,<br>a mission to fulfill.</h2>
+
+                <p>
+                    Victory Churches of Asia - Muzon is a Christ-centered church committed
+                    to glorifying God, making disciples, and serving the community through
+                    the love and truth of Jesus Christ.
+                </p>
+
+                <p>
+                    Whether you are visiting for the first time or searching for a church
+                    family, we believe there is a place for you here.
+                </p>
+                <a href="about.html" class="primary-btn small-btn">Learn More <span>→</span></a>
+            </div>
+        </section>
+
+        
 
        <!-- SERVICE TIMES -->
         <section class="service-section" id="service-times">
