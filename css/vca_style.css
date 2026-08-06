@@ -98,10 +98,15 @@
 
 :root {
   --vca-blue: #233b82;
+  --vca-navy: #001b57;
+  --vca-navy-dark: #06143b;
   --vca-light-blue: #98c2ec;
   --white: #ffffff;
   --black: #000000;
   --text-dark: #1f2937;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --surface-soft: #f8fbff;
   --gold: #d4af37;
 }
 
@@ -195,47 +200,7 @@ body {
 }
 
 .home-hero {
-  min-height: 640px;
-  background:
-    linear-gradient(
-      90deg,
-      rgba(0, 20, 65, 0.94) 0%,
-      rgba(0, 20, 65, 0.82) 38%,
-      rgba(0, 20, 65, 0.48) 68%,
-      rgba(0, 20, 65, 0.16) 100%
-    ),
-    url("../assets/home/church_image_home.webp");
-
-  background-size: cover;
-  background-position: 75% center;
-  background-repeat: no-repeat;
-
-  display: flex;
-  align-items: center;
-  padding-top: 90px;
-}
-
-.hero-content {
-  width: min(1180px, 90%);
-  margin: 0 auto;
-  color: var(--white);
-}
-
-.hero-content h1 {
-  font-size: clamp(3.5rem, 7vw, 6rem);
-  font-weight: 900;
-  line-height: 0.95;
-  margin-bottom: 22px;
-  text-shadow: 0 6px 24px rgba(0, 12, 46, 0.35);
-}
-
-.hero-content p {
-  max-width: 650px;
-  font-size: clamp(1.05rem, 1.6vw, 1.25rem);
-  line-height: 1.7;
-  margin-bottom: 30px;
-  font-weight: 600;
-  color: rgba(255, 255, 255, 0.95);
+  position: relative;
 }
 
 /* BUTTONS */
@@ -1056,6 +1021,10 @@ body {
 ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
+  .about-hero-video {
+    display: none;
+  }
+
   .home-hero.landing-style-hero .landing-hero-image {
     opacity: 1;
   }
@@ -1097,11 +1066,6 @@ body {
 /* =====================================
    ANNOUNCEMENT HEADING - IMPROVED
 ===================================== */
-
-.announcement-section {
-  width: min(1100px, 88%);
-  margin: 80px auto;
-}
 
 .announcement-heading {
     position:relative;
@@ -2039,29 +2003,55 @@ body {
 /* ABOUT HERO */
 
 .about-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   min-height: 560px;
-  background: 
-    linear-gradient(
-      90deg,
-      rgba(0, 20, 65, 0.92) 0%,
-      rgba(0, 20, 65, 0.78) 38%,
-      rgba(0, 20, 65, 0.36) 68%,
-      rgba(0, 20, 65, 0.10) 100%
-    ),
-    url("../assets/index/VCA_CHURCH.webp");
-  background-size: cover;
-  background-position: 80% center;
-  display: flex;
-  align-items: center;
   padding-top: 118px;
+  background: var(--vca-navy-dark) url("../assets/index/VCA_CHURCH.webp") center / cover no-repeat;
+}
+
+.about-hero-video,
+.about-hero-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.about-hero-video {
+  z-index: -2;
+  object-fit: cover;
+  object-position: 62% center;
+}
+
+@media (max-width: 900px) {
+  .about-hero-video {
+    object-position: 66% center;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-hero-video {
+    object-position: 72% center;
+  }
+}
+
+.about-hero-overlay {
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 20, 65, 0.94) 0%,
+    rgba(0, 20, 65, 0.8) 38%,
+    rgba(0, 20, 65, 0.42) 68%,
+    rgba(0, 20, 65, 0.16) 100%
+  );
 }
 
 .about-hero-content {
-  width: min(1100px, 88%);
-  margin: 0 auto;
-  color: var(--white);
+  position: relative;
+  z-index: 1;
   padding: 34px 0 56px;
-  
 }
 
 .about-hero-content h1 {
@@ -2341,7 +2331,7 @@ body {
   );
 }
 
-.pastor-video-poster.about-image img {
+.pastor-video-poster:hover img {
   transform: scale(1.04);
   filter: brightness(0.95);
 }
@@ -2546,47 +2536,6 @@ body {
   background: var(--gold);
   margin: 0 auto 26px;
 }
-
-/* STORY */
-
-.story-intro{
-    width:min(760px, 90%);
-    margin:120px auto 70px;
-    text-align:center;
-    position:relative;
-}
-
-.story-intro::before{
-    content:"";
-    display:block;
-    width:80px;
-    height:3px;
-    background:var(--gold);
-    margin:0 auto 28px;
-}
-
-.story-intro .section-label{
-    color:var(--gold);
-    font-size:.72rem;
-    font-weight:800;
-    letter-spacing:2px;
-    margin-bottom:14px;
-}
-
-.story-intro h2{
-    font-size:clamp(2.3rem,4vw,3.6rem);
-    color:var(--vca-blue);
-    margin-bottom:22px;
-    line-height:1.15;
-}
-
-.story-intro p{
-    color:#475569;
-    font-size:1.05rem;
-    line-height:1.8;
-    max-width:700px;
-    margin:0 auto;
-}	
 
 /* ================================
    ABOUT STORY NARRATIVE - REFINED
@@ -3275,49 +3224,7 @@ body {
   line-height: 1.7;
 }
 
-/* EVENTS GRID */
-
-.events-section {
-  width: min(1100px, 88%);
-  margin: 60px auto 70px;
-}
-
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 26px;
-}
-
-.event-card {
-  background: var(--white);
-  border-radius: 14px;
-  overflow: hidden;
-  box-shadow: 0 12px 28px rgba(35, 59, 130, 0.12);
-  display: flex;
-  flex-direction: column;
-  transition: 0.3s ease;
-}
-
-.event-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 18px 35px rgba(35, 59, 130, 0.16);
-}
-
-.event-image {
-  position: relative;
-  height: 190px;
-  transition: transform 0.4s ease;
-}
-
-.event-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.event-card:hover .event-image img {
-  transform: scale(1.05);
-}
+/* EVENT DETAILS */
 
 .event-date {
   position: absolute;
@@ -4296,7 +4203,6 @@ body.page-fade-out {
 
 @media (max-width: 1000px) {
     .header-inner,
-    .hero-content,
     .about-hero-content,
     .ministries-hero-content,
     .preachings-hero-content,
@@ -4313,10 +4219,6 @@ body.page-fade-out {
 
     .ministry-card:nth-child(5) {
         grid-column: auto;
-    }
-
-    .events-grid {
-      grid-template-columns: repeat(2, 1fr);
     }
 
   .service-box,
@@ -4378,11 +4280,6 @@ body.page-fade-out {
     border-bottom: 1px solid #d7e2f0;
   }
 
-  .hero-content h1 {
-    font-size: 3rem;
-  }
-
-  .home-hero,
   .ministries-hero,
   .preachings-hero,
   .events-hero,
@@ -4391,10 +4288,6 @@ body.page-fade-out {
   .fellowship-hero {
     min-height: 460px;
     padding-top: 100px;
-  }
-
-  .home-hero {
-    background-position: center;
   }
 
   .new-here {
@@ -4756,22 +4649,6 @@ body.page-fade-out {
       max-width: 260px;
   }
 
-  .home-hero {
-    min-height: 500px;
-    text-align: center;
-  }
-
-  .hero-content {
-    width: min(100% - 36px, 1100px);
-    padding-top: 105px;
-  }
-
-  .hero-content p {
-    font-size: 1.05rem;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
   .ministries-hero {
     min-height: 520px;
     text-align: center;    
@@ -4839,14 +4716,6 @@ body.page-fade-out {
 
   .events-hero {
     min-height: 420px;
-  }
-
-  .events-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .event-image {
-    height: 220px;
   }
 
   .event-details {
@@ -5166,94 +5035,6 @@ body.page-fade-out {
 
   .fellowship-content {
     padding: 24px 22px 26px;
-  }
-}
-
-@media (max-width: 768px) {
-  .announcement-section {
-    margin: 64px auto 70px;
-  }
-
-  .announcement-section .section-title {
-    margin-bottom: 18px;
-    padding-left: 0;
-    border-left: none;
-    text-align: center;
-  }
-
-  .announcement-section .section-title h2 {
-    font-size: 2rem;
-  }
-
-  .announcement-section .section-title p {
-    margin: 0 auto;
-    font-size: 0.96rem;
-  }
-
-  .announcement-carousel {
-    min-height: 460px;
-    border-radius: 20px;
-  }
-
-  .announcement-slide {
-    min-height: 460px;
-  }
-
-  .announcement-content {
-    max-width: 100%;
-    padding: 52px 32px;
-  }
-
-  .announcement-content h3 {
-    font-size: 2.3rem;
-  }
-
-  .announcement-content p {
-    font-size: 1rem;
-  }
-
-  .carousel-btn {
-    width: 44px;
-    height: 44px;
-    opacity: .85;
-  }
-
-  .prev-btn {
-    left: 14px;
-  }
-
-  .next-btn {
-    right: 14px;
-  }
-
-  .carousel-footer {
-    gap: 12px;
-  }
-}
-
-/* Mobile */
-
-@media (max-width: 768px) {
-  .announcement-section {
-    width: min(100% - 36px, 1100px);
-    margin: 70px auto;
-  }
-
-  .announcement-heading {
-    padding-left: 22px;
-    margin-bottom: 28px;
-  }
-
-  .announcement-heading::before {
-    height: 82px;
-  }
-
-  .announcement-heading h2 {
-    font-size: 2.35rem;
-  }
-
-  .announcement-heading p {
-    font-size: 0.98rem;
   }
 }
 
@@ -5990,20 +5771,6 @@ button:focus-visible,
   background: #eef3fb;
 }
 
-@media (min-width: 1201px) and (max-width: 1366px) and (max-height: 800px) {
-
-
-
-
-}
-
-@media (min-width: 1101px) and (max-width: 1280px) and (max-height: 760px) {
-
-
-
-
-}
-
 @media (min-width: 1001px) and (max-width: 1180px) {
   .about-hero,
   .ministries-hero,
@@ -6036,8 +5803,7 @@ button:focus-visible,
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .ministry-card img,
-  .event-image {
+  .ministry-card img {
     height: 180px;
   }
 
@@ -6189,7 +5955,6 @@ button:focus-visible,
   }
 
   .ministry-card img,
-  .event-image,
   .preaching-thumb img,
   .fellowship-card img {
     height: 210px;
@@ -6216,7 +5981,6 @@ button:focus-visible,
     padding-inline: 16px;
   }
 
-  .event-content,
   .ministry-content,
   .fellowship-content,
   .download-card,
@@ -6226,9 +5990,6 @@ button:focus-visible,
     padding-left: 18px;
     padding-right: 18px;
   }
-}
-
-@media (max-width: 768px) {
 }
 
 /* TABLET */
@@ -6315,15 +6076,6 @@ button:focus-visible,
   .home-header .nav-btn {
     display: none;
   }
-
-
-
-
-
-
-
-
-
 }
 
 /* iPad navigation: keep the full site menu available on every page. */
@@ -6459,15 +6211,19 @@ button:focus-visible,
 }
 
 .event-card {
+  display: flex;
+  flex-direction: column;
   min-width: 0;
   height: 100%;
   border: 1px solid rgba(0, 27, 87, 0.08);
   border-radius: 16px;
   overflow: hidden;
   background: var(--white);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .event-image {
+  position: relative;
   flex: 0 0 auto;
   width: 100%;
   height: auto;
