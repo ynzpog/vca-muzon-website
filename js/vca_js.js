@@ -709,6 +709,101 @@ if (landingHero && heroVideos.length > 0) {
   }
 }
 
+/* ================================
+   ABOUT HERO VIDEO
+   Performance Enhancement
+================================ */
+
+const aboutHero = document.querySelector(".about-hero");
+const aboutHeroVideo = document.querySelector(".about-hero-video");
+
+if (aboutHero && aboutHeroVideo) {
+  const aboutPrefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  );
+
+  let isAboutHeroVisible = true;
+
+  async function playAboutHeroVideo() {
+    if (
+      document.hidden ||
+      !isAboutHeroVisible ||
+      aboutPrefersReducedMotion.matches
+    ) {
+      return;
+    }
+
+    try {
+      await aboutHeroVideo.play();
+      aboutHero.classList.remove("about-hero-autoplay-failed");
+    } catch (error) {
+      aboutHero.classList.add("about-hero-autoplay-failed");
+    }
+  }
+
+  function pauseAboutHeroVideo() {
+    aboutHeroVideo.pause();
+  }
+
+  // Pause when the browser tab is hidden.
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      pauseAboutHeroVideo();
+    } else {
+      playAboutHeroVideo();
+    }
+  });
+
+  // Pause when the hero leaves the viewport.
+  if ("IntersectionObserver" in window) {
+    const aboutHeroObserver = new IntersectionObserver(
+      ([entry]) => {
+        isAboutHeroVisible = entry.isIntersecting;
+
+        if (isAboutHeroVisible) {
+          playAboutHeroVideo();
+        } else {
+          pauseAboutHeroVideo();
+        }
+      },
+      {
+        threshold: 0.15
+      }
+    );
+
+    aboutHeroObserver.observe(aboutHero);
+  }
+
+  // Respect prefers-reduced-motion.
+  function handleAboutReducedMotion(event) {
+    if (event.matches) {
+      pauseAboutHeroVideo();
+    } else {
+      playAboutHeroVideo();
+    }
+  }
+
+  if (
+    typeof aboutPrefersReducedMotion.addEventListener ===
+    "function"
+  ) {
+    aboutPrefersReducedMotion.addEventListener(
+      "change",
+      handleAboutReducedMotion
+    );
+  } else {
+    aboutPrefersReducedMotion.addListener(
+      handleAboutReducedMotion
+    );
+  }
+
+  if (aboutPrefersReducedMotion.matches) {
+    pauseAboutHeroVideo();
+  } else {
+    playAboutHeroVideo();
+  }
+}
+
 /* FIX WHITE SCREEN WHEN USING BACK BUTTON */
 
 window.addEventListener("pageshow", () => {
