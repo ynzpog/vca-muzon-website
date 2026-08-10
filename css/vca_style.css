@@ -66,9 +66,9 @@
   }
 
   .uat-badge {
-    right: 12px;
-    bottom: 12px;
-    padding: 9px 12px;
+    right: 15px;
+    bottom: 15px;
+    padding: 10px 14px;
   }
 
   .badge-title {
@@ -77,28 +77,6 @@
 
   .badge-subtitle {
     font-size: 10px;
-  }
-}
-
-@media (max-width: 480px) {
-  .uat-watermark {
-    font-size: 3rem;
-    opacity: 0.08;
-  }
-
-  .uat-badge {
-    right: 10px;
-    bottom: 10px;
-    padding: 8px 11px;
-    border-radius: 12px;
-  }
-
-  .badge-title {
-    font-size: 10px;
-  }
-
-  .badge-subtitle {
-    font-size: 9px;
   }
 }
 
@@ -4943,6 +4921,21 @@ body.page-fade-out {
 }
 
 @media (max-width: 768px) {
+  .uat-badge {
+    right: 12px;
+    bottom: 12px;
+    padding: 9px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .uat-watermark {
+    font-size: 3rem;
+    opacity: 0.08;
+  }
+}
+
+@media (max-width: 768px) {
   .mvv-section {
     width: min(100% - 36px, 980px);
     gap: 60px;
@@ -5398,6 +5391,21 @@ body.page-fade-out {
     padding-bottom: 86px;
   }
 
+  .uat-badge {
+    right: 10px;
+    bottom: 10px;
+    padding: 8px 11px;
+    border-radius: 12px;
+  }
+
+  .badge-title {
+    font-size: 10px;
+  }
+
+  .badge-subtitle {
+    font-size: 9px;
+  }
+
   .about-preview,
   .service-table,
   .feature-section,
@@ -5594,6 +5602,10 @@ button:focus-visible,
 .site-footer {
   position: relative;
   z-index: 2;
+}
+
+.uat-watermark {
+  color: rgba(184, 139, 61, 0.032);
 }
 
 @media (min-width: 769px) {
