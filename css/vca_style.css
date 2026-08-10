@@ -426,7 +426,7 @@ body {
 }
 
 .home-hero.landing-style-hero .landing-title {
-  width: clamp(620px, 54vw, 950px);
+  width: clamp(560px, 38vw, 660px);
   margin-bottom: 0;
 }
 
@@ -439,6 +439,16 @@ body {
   margin-top: 0;
 
   transform: none;
+}
+
+@media (min-width: 1181px) {
+  .home-hero.landing-style-hero .landing-title {
+    margin-top: clamp(130px, 16vh, 150px);
+  }
+
+  .home-hero.landing-style-hero .landing-title-image {
+    transform: translateY(50px);
+  }
 }
 
 .home-hero.landing-style-hero .landing-content .primary-btn {
@@ -734,7 +744,7 @@ body {
   }
 
   .home-hero.landing-style-hero .landing-title {
-    width: clamp(620px, 54vw, 950px);
+    width: clamp(560px, 38vw, 660px);
     margin-top: clamp(78px, 11vh, 92px);
   }
 
@@ -2204,9 +2214,12 @@ body {
   transition: .35s ease;
 }
 
-.mvv-icon i {
-  font-size: 1.75rem;
-  line-height: 1;
+.mvv-icon svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  fill: none;
+  stroke: currentColor;
+  flex-shrink: 0;
 }
 
 .mvv-card:hover .mvv-icon {
