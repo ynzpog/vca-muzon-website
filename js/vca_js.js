@@ -344,11 +344,38 @@ const prefersReducedMotion = window.matchMedia(
   "(prefers-reduced-motion: reduce)"
 );
 
+/*
+  Fallback duration for each hero video, in milliseconds.
+  Actual video metadata duration is used when available.
+
+  Video 1 = welcome.mp4
+  Video 2 = guitar.mp4
+  Video 3 = drums.mp4
+  Video 4 = keyboard.mp4
+  Video 5 = preaching.mp4
+*/
+const HERO_VIDEO_DURATIONS = [
+  3000,
+  3000,
+  3000,
+  3000,
+  3000
+];
+
 let heroVideoIndex = 0;
 let heroVideoTimer = null;
 let isHeroVisible = true;
 let isHeroSequenceRunning = false;
 let autoplayFailed = false;
+
+/*
+  Video 1 is already prepared by HTML:
+  autoplay + preload="auto"
+
+  Videos 2–5 begin with preload="none"
+  and are progressively prepared one at a time.
+*/
+const preparedHeroVideos = new Set([0]);
 
 
 /* ================================
@@ -389,17 +416,23 @@ function getHeroVideoDuration(index) {
   const video = heroVideos[index];
 
   if (!video) {
-    return 3000;
+    return HERO_VIDEO_DURATIONS[index] || 3000;
   }
 
-  if (Number.isFinite(video.duration) && video.duration > 0) {
-    const remainingDuration = video.duration - video.currentTime;
+  if (
+    Number.isFinite(video.duration) &&
+    video.duration > 0
+  ) {
+    const remainingDuration =
+      video.duration - video.currentTime;
 
-    return Math.max(remainingDuration * 1000, 100);
+    return Math.max(
+      remainingDuration * 1000,
+      100
+    );
   }
 
-  // Used only if the browser cannot read the video's metadata.
-  return 3000;
+  return HERO_VIDEO_DURATIONS[index] || 3000;
 }
 
 
@@ -432,6 +465,36 @@ function showChurchImage() {
       video.pause();
     }
   });
+}
+
+
+/* ================================
+   PROGRESSIVE VIDEO PREPARATION
+================================ */
+
+function prepareHeroVideo(index) {
+  const video = heroVideos[index];
+
+  if (
+    !video ||
+    video.tagName !== "VIDEO" ||
+    preparedHeroVideos.has(index) ||
+    prefersReducedMotion.matches
+  ) {
+    return;
+  }
+
+  try {
+    video.preload = "auto";
+    video.load();
+
+    preparedHeroVideos.add(index);
+  } catch (error) {
+    /*
+      Failure to prepare a future video must not
+      interrupt the currently playing hero video.
+    */
+  }
 }
 
 
@@ -486,6 +549,15 @@ async function showHeroVideo(index, restartVideo = true) {
 
     autoplayFailed = false;
     landingHero.classList.add("show-video");
+
+    /*
+      Prepare only the next video after the
+      current video has successfully started.
+    */
+    const nextVideoIndex =
+      (index + 1) % heroVideos.length;
+
+    prepareHeroVideo(nextVideoIndex);
 
     return true;
   } catch (error) {
